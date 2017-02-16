@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class FamilySideServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FamilySideServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FamilySideServerApplication.class, args);
+    }
 }
