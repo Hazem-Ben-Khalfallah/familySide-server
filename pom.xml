@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>familySide-server</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Family member GPS locator - server side code</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,6 +19,7 @@
     </parent>
 
     <properties>
+        <start-class>com.blacknebula.familySide.FamilySideServerApplication</start-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -90,6 +91,27 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
