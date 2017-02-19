@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserCoordinatesController {
     }
 
     @RequestMapping(path = "/position", method = RequestMethod.POST)
-    public Mono<Void> savePosition(@RequestBody Mono<PositionDto> positionDto) {
+    public Mono<Void> savePosition(@RequestBody Flux<PositionDto> positionDto) {
         return this.userCoordinatesService.savePosition(positionDto);
     }
 
