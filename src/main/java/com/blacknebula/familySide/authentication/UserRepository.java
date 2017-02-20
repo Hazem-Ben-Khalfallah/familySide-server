@@ -1,14 +1,13 @@
-package com.blacknebula.familySide.repository;
+package com.blacknebula.familySide.authentication;
 
-import com.blacknebula.familySide.model.UserCoordinates;
 import org.springframework.data.mongodb.repository.InfiniteStream;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 /**
- * Repository interface to manage {@link UserCoordinates} instances.
+ * Repository interface to manage {@link UserEntity} instances.
  */
-public interface UserCoordinatesRepository extends ReactiveCrudRepository<UserCoordinates, String> {
+interface UserRepository extends ReactiveCrudRepository<UserEntity, String> {
 
     /**
      * Derived query selecting by {@code username}.
@@ -16,13 +15,13 @@ public interface UserCoordinatesRepository extends ReactiveCrudRepository<UserCo
      * @param username username
      * @return Flux of UserCoordinates
      */
-    Flux<UserCoordinates> findByUsername(String username);
+    Flux<UserEntity> findByUsername(String username);
 
     /**
      * Use a tailable cursor to emit a stream of entities as new entities are written to the capped collection.
      *
-     * @return infinit Flux of UserCoordinates
+     * @return infinite Flux of UserCoordinates
      */
     @InfiniteStream
-    Flux<UserCoordinates> findWithTailableCursorBy();
+    Flux<UserEntity> findWithTailableCursorBy();
 }

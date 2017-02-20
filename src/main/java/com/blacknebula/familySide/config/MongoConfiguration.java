@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.repository;
+package com.blacknebula.familySide.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.reactivestreams.client.MongoClient;
@@ -9,10 +9,6 @@ import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguratio
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-/**
- * @author Sebastien Deleuze
- * @author Mark Paluch
- */
 @EnableReactiveMongoRepositories
 public class MongoConfiguration extends AbstractReactiveMongoConfiguration {
 
