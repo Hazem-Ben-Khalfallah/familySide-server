@@ -71,6 +71,13 @@
             <version>1.16.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.projectreactor.addons</groupId>
+            <artifactId>reactor-test</artifactId>
+            <version>3.0.3.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
