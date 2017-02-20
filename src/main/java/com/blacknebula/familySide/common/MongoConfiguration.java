@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.config;
+package com.blacknebula.familySide.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.reactivestreams.client.MongoClient;

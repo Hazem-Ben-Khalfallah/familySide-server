@@ -1,7 +1,7 @@
 package com.blacknebula.familySide.authentication;
 
 import com.blacknebula.familySide.common.StringUtils;
-import com.blacknebula.familySide.common.exception.CustomException;
+import com.blacknebula.familySide.common.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

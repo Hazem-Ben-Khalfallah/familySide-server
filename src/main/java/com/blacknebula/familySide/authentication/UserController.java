@@ -19,6 +19,12 @@ public class UserController {
     }
 
 
+    /**
+     * @param userDto user dto
+     * @return Mono void
+     * @should return 200 status
+     * @should return valid error status if an exception has been thrown
+     */
     @RequestMapping(path = "/user", method = RequestMethod.POST)
     public Mono<Void> connect(@RequestBody Mono<UserDto> userDto) {
         return userService.signIn(userDto);

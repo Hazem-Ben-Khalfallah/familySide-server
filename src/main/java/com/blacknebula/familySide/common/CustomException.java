@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.common.exception;
+package com.blacknebula.familySide.common;
 
 import org.springframework.http.HttpStatus;
 

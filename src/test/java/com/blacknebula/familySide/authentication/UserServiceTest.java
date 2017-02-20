@@ -1,7 +1,7 @@
 package com.blacknebula.familySide.authentication;
 
 import com.blacknebula.familySide.ApplicationTest;
-import com.blacknebula.familySide.common.exception.CustomException;
+import com.blacknebula.familySide.common.CustomException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

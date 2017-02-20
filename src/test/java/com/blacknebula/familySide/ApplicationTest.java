@@ -17,7 +17,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ApplicationTest {
+public abstract class ApplicationTest {
 
     @Autowired
     private MongoTemplate mongoTemplate;
