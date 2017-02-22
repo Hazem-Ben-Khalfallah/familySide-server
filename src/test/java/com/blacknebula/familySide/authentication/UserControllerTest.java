@@ -2,6 +2,7 @@ package com.blacknebula.familySide.authentication;
 
 import com.blacknebula.familySide.ApplicationTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,7 @@ public class UserControllerTest extends ApplicationTest {
      * @see UserController#connect(reactor.core.publisher.Mono)
      */
     @Test
+    @Ignore
     public void connect_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
         this.client.post()
                 .uri("/user")
