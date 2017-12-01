@@ -1,6 +1,5 @@
 package com.blacknebula.familySide.tracking;
 
-import org.springframework.data.mongodb.repository.InfiniteStream;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
@@ -22,6 +21,5 @@ interface TrackingRepository extends ReactiveCrudRepository<UserCoordinatesEntit
      *
      * @return infinit Flux of UserCoordinatesEntity
      */
-    @InfiniteStream
     Flux<UserCoordinatesEntity> findWithTailableCursorBy();
 }

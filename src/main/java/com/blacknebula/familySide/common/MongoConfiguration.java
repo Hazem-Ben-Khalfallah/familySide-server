@@ -21,13 +21,12 @@ public class MongoConfiguration extends AbstractReactiveMongoConfiguration {
     }
 
     @Override
-    public MongoClient mongoClient() {
-        return MongoClients.create();
-    }
-
-    @Override
     protected String getDatabaseName() {
         return database;
     }
 
+    @Override
+    public MongoClient reactiveMongoClient() {
+        return MongoClients.create();
+    }
 }

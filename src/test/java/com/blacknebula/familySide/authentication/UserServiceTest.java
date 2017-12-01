@@ -28,7 +28,7 @@ public class UserServiceTest extends ApplicationTest {
     public void signIn_shouldThrowAnExceptionIfUsernameIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.builder()
+                userService.signIn(Mono.just(UserDto.newBuilder()
                         .email("Leo@mail.com")//
                         .password("password")//
                         .build())))
@@ -49,7 +49,7 @@ public class UserServiceTest extends ApplicationTest {
     public void signIn_shouldThrowAnExceptionIfEmailIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.builder()
+                userService.signIn(Mono.just(UserDto.newBuilder()
                         .username("Leo")//
                         .password("password")//
                         .build())))
@@ -70,7 +70,7 @@ public class UserServiceTest extends ApplicationTest {
     public void signIn_shouldThrowAnExceptionIfPasswordIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.builder()
+                userService.signIn(Mono.just(UserDto.newBuilder()
                         .username("Leo")//
                         .email("Leo@mail.com")//
                         .build())))
@@ -94,13 +94,13 @@ public class UserServiceTest extends ApplicationTest {
 
         StepVerifier.create(
                 // given
-                userRepository.save(UserEntity.builder()
+                userRepository.save(UserEntity.newBuilder()
                         .username(username)//
                         .email("Layth@mail.com")//
                         .password("password")//
                         .build())
                         // when
-                        .then(userService.signIn(Mono.just(UserDto.builder()
+                        .then(userService.signIn(Mono.just(UserDto.newBuilder()
                                 .username(username)//
                                 .password("password")
                                 .email("Leo@mail.com")//
@@ -124,17 +124,55 @@ public class UserServiceTest extends ApplicationTest {
 
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.builder()
-                        .username("Leo")//
+                userService.signIn(Mono.just(UserDto.newBuilder()
+                        .username(username)//
                         .password("password")//
                         .email("Leo@mail.com")//
                         .build()))
-                        .then(userRepository.findOne(username)))
+                        .thenMany(userRepository.findAll()) //
+                        .map(UserEntity::getUsername) //
+        )
                 // then
-                .consumeNextWith(userEntity -> {
-                    Assertions.assertThat(userEntity).isNotNull();
-                    Assertions.assertThat(userEntity.getUsername()).isEqualTo(username);
-                })
+                .expectNext(username)
+                .expectComplete()
+                .verify();
+    }
+
+    /**
+     * @verifies return true if username already exists in database
+     * @see UserService#checkUsernameExistence(String)
+     */
+    @Test
+    public void checkUsernameExistence_shouldReturnTrueIfUsernameAlreadyExistsInDatabase() throws Exception {
+        // given
+        final String username = "Leo";
+        userService.signIn(Mono.just(UserDto.newBuilder()
+                .username(username)//
+                .password("password")//
+                .email("Leo@mail.com")//
+                .build()))
+                .doOnSuccess(aVoid -> StepVerifier.create(
+                        // when
+                        userService.checkUsernameExistence(username) //
+                )
+                        // then
+                        .expectNext(true)
+                        .expectComplete()
+                        .verify());
+    }
+
+    /**
+     * @verifies return false if username does not exist in database
+     * @see UserService#checkUsernameExistence(String)
+     */
+    @Test
+    public void checkUsernameExistence_shouldReturnFalseIfUsernameDoesNotExistInDatabase() throws Exception {
+        StepVerifier.create(
+                // when
+                userService.checkUsernameExistence("invalid_username") //
+        )
+                // then
+                .expectNext(false)
                 .expectComplete()
                 .verify();
     }

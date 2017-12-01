@@ -42,16 +42,17 @@ public class UserControllerTest extends ApplicationTest {
         this.client.post()
                 .uri("/user")
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange(Mono.just(UserDto.builder()
+                .body(Mono.just(UserDto.newBuilder()
                         .username(username)
                         .email("Leo@mail.com")
                         .password("password")
                         .build()), UserDto.class)
+                .exchange()
                 .expectStatus()
                 .isEqualTo(HttpStatus.OK.value());
 
         //then
-        StepVerifier.create(userRepository.findOne(username))
+        StepVerifier.create(userRepository.findByUsername(username))
                 .expectNextCount(1);
     }
 
@@ -65,10 +66,11 @@ public class UserControllerTest extends ApplicationTest {
         this.client.post()
                 .uri("/user")
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange(Mono.just(UserDto.builder()
+                .body(Mono.just(UserDto.newBuilder()
                         .email("Leo@mail.com")
                         .password("password")
                         .build()), UserDto.class)
+                .exchange()
                 .expectStatus().isBadRequest();
     }
 }

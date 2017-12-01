@@ -11,13 +11,6 @@
     <name>familySide-server</name>
     <description>Family member GPS locator - server side code</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.BUILD-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <properties>
         <start-class>com.blacknebula.familySide.FamilySideServerApplication</start-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,10 +21,17 @@
         <skip.integration.tests>false</skip.integration.tests>
     </properties>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.BUILD-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot.experimental</groupId>
-            <artifactId>spring-boot-starter-web-reactive</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -64,7 +64,6 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-reactivestreams</artifactId>
-            <version>${mongodb-driver-reactivestreams.version}</version>
         </dependency>
 
         <dependency>
@@ -74,25 +73,12 @@
         </dependency>
 
         <dependency>
-            <groupId>io.projectreactor.addons</groupId>
+            <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
-            <version>3.0.3.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot.experimental</groupId>
-                <artifactId>spring-boot-dependencies-web-reactive</artifactId>
-                <version>0.1.0.BUILD-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <finalName>${project.name}</finalName>
