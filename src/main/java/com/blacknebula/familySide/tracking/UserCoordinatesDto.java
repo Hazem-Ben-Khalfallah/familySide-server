@@ -16,6 +16,7 @@ class UserCoordinatesDto {
 
     private Double lang;
 
+    @SuppressWarnings("unused")
     public UserCoordinatesDto() {
     }
 

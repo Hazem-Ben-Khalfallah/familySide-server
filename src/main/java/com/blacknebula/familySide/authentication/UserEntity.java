@@ -4,9 +4,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.Set;
 
 
-@Document
+@Document(collection = "user")
 class UserEntity {
 
     @Id
@@ -15,7 +16,9 @@ class UserEntity {
     private String email;
     private String password;
     private Date creationDate;
+    private Set<String> familyMembers;
 
+    @SuppressWarnings("unused")
     public UserEntity() {
     }
 
@@ -25,6 +28,7 @@ class UserEntity {
         setEmail(builder.email);
         setPassword(builder.password);
         setCreationDate(builder.creationDate);
+        setFamilyMembers(builder.familyMembers);
     }
 
     public static Builder newBuilder() {
@@ -71,6 +75,14 @@ class UserEntity {
         this.creationDate = creationDate;
     }
 
+    public Set<String> getFamilyMembers() {
+        return familyMembers;
+    }
+
+    public void setFamilyMembers(Set<String> familyMembers) {
+        this.familyMembers = familyMembers;
+    }
+
 
     public static final class Builder {
         private String id;
@@ -78,6 +90,7 @@ class UserEntity {
         private String email;
         private String password;
         private Date creationDate;
+        private Set<String> familyMembers;
 
         private Builder() {
         }
@@ -104,6 +117,11 @@ class UserEntity {
 
         public Builder creationDate(Date val) {
             creationDate = val;
+            return this;
+        }
+
+        public Builder familyMembers(Set<String> val) {
+            familyMembers = val;
             return this;
         }
 

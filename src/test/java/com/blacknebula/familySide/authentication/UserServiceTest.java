@@ -2,6 +2,7 @@ package com.blacknebula.familySide.authentication;
 
 import com.blacknebula.familySide.ApplicationTest;
 import com.blacknebula.familySide.common.CustomException;
+import com.google.common.collect.ImmutableSet;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,11 +147,11 @@ public class UserServiceTest extends ApplicationTest {
     public void checkUsernameExistence_shouldReturnTrueIfUsernameAlreadyExistsInDatabase() throws Exception {
         // given
         final String username = "Leo";
-        userService.signIn(Mono.just(UserDto.newBuilder()
+        userRepository.save(UserEntity.newBuilder()
                 .username(username)//
                 .password("password")//
                 .email("Leo@mail.com")//
-                .build()))
+                .build())
                 .doOnSuccess(aVoid -> StepVerifier.create(
                         // when
                         userService.checkUsernameExistence(username) //
@@ -175,5 +176,89 @@ public class UserServiceTest extends ApplicationTest {
                 .expectNext(false)
                 .expectComplete()
                 .verify();
+    }
+
+    /**
+     * @verifies throw an exception if username is null
+     * @see UserService#listFamilyMembers(reactor.core.publisher.Mono)
+     */
+    @Test
+    public void listFamilyMembers_shouldThrowAnExceptionIfUsernameIsNull() throws Exception {
+        StepVerifier.create(
+                // when
+                userService.listFamilyMembers(Mono.just("")))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+                    Assertions.assertThat(throwable.getMessage()).isEqualToIgnoringCase("username should not be empty nor null");
+                })
+                .verify();
+    }
+
+    /**
+     * @verifies throw an exception if username does not exist in database
+     * @see UserService#listFamilyMembers(reactor.core.publisher.Mono)
+     */
+    @Test
+    public void listFamilyMembers_shouldThrowAnExceptionIfUsernameDoesNotExistInDatabase() throws Exception {
+        StepVerifier.create(
+                // when
+                userService.listFamilyMembers(Mono.just("invalid_username")))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+                    Assertions.assertThat(throwable.getMessage()).isEqualToIgnoringCase("username does not exist");
+                })
+                .verify();
+    }
+
+    /**
+     * @verifies return empty flux  if user has no family members
+     * @see UserService#listFamilyMembers(reactor.core.publisher.Mono)
+     */
+    @Test
+    public void listFamilyMembers_shouldReturnEmptyFluxIfUserHasNoFamilyMembers() throws Exception {
+        // given
+        final String username = "Leo";
+        userRepository.save(UserEntity.newBuilder()
+                .username(username)//
+                .password("password")//
+                .email("Leo@mail.com")//
+                .build())
+                .doOnSuccess(aVoid -> StepVerifier.create(
+                        // when
+                        userService.listFamilyMembers(Mono.just(username)) //
+                )
+                        // then
+                        .expectComplete()
+                        .verify());
+    }
+
+    /**
+     * @verifies return flux of family members ids
+     * @see UserService#listFamilyMembers(reactor.core.publisher.Mono)
+     */
+    @Test
+    public void listFamilyMembers_shouldReturnFluxOfFamilyMembersIds() throws Exception {
+        final String username = "Leo";
+        final String[] familyMembersIds = {"Leo-father", "Leo-mother"};
+        userRepository.save(UserEntity.newBuilder()
+                .username(username)//
+                .password("password")//
+                .familyMembers(ImmutableSet.<String>builder()
+                        .add(familyMembersIds)
+                        .build())
+                .email("Leo@mail.com")//
+                .build())
+                .doOnSuccess(aVoid -> StepVerifier.create(
+                        // when
+                        userService.listFamilyMembers(Mono.just(username)) //
+                )
+                        // then
+                        .expectNext(familyMembersIds)
+                        .expectComplete()
+                        .verify());
     }
 }

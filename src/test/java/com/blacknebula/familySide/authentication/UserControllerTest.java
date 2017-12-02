@@ -53,7 +53,7 @@ public class UserControllerTest extends ApplicationTest {
 
         //then
         StepVerifier.create(userRepository.findByUsername(username))
-                .expectNextCount(1);
+                .expectNextMatches(userEntity -> username.equals(userEntity.getUsername()));
     }
 
     /**
@@ -61,7 +61,6 @@ public class UserControllerTest extends ApplicationTest {
      * @see UserController#connect(reactor.core.publisher.Mono)
      */
     @Test
-    @Ignore
     public void connect_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
         this.client.post()
                 .uri("/user")
@@ -71,6 +70,6 @@ public class UserControllerTest extends ApplicationTest {
                         .password("password")
                         .build()), UserDto.class)
                 .exchange()
-                .expectStatus().isBadRequest();
+                .expectStatus().is5xxServerError();
     }
 }

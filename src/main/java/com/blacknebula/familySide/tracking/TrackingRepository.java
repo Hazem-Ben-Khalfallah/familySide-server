@@ -6,20 +6,14 @@ import reactor.core.publisher.Flux;
 /**
  * Repository interface to manage {@link UserCoordinatesEntity} instances.
  */
-interface TrackingRepository extends ReactiveCrudRepository<UserCoordinatesEntity, String> {
+interface TrackingRepository extends ReactiveCrudRepository<UserCoordinatesEntity, String>, CustomTrackingRepository {
 
     /**
      * Derived query selecting by {@code username}.
      *
      * @param username username
      * @return Flux of UserCoordinatesEntity
+     * todo use stream instead
      */
     Flux<UserCoordinatesEntity> findByUsername(String username);
-
-    /**
-     * Use a tailable cursor to emit a stream of entities as new entities are written to the capped collection.
-     *
-     * @return infinit Flux of UserCoordinatesEntity
-     */
-    Flux<UserCoordinatesEntity> findWithTailableCursorBy();
 }

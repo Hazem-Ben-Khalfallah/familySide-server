@@ -1,10 +1,7 @@
 package com.blacknebula.familySide.tracking;
 
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,14 +15,26 @@ public class TrackingController {
         this.trackingService = trackingService;
     }
 
+    /**
+     * @param userCoordinatesDtoFlux flux of UserCoordinatesDto
+     * @return Mono void
+     * @should return 200 status
+     * @should return valid error status if an exception has been thrown
+     */
     @RequestMapping(path = "/position", method = RequestMethod.POST)
-    public Mono<Void> savePosition(@RequestBody Flux<UserCoordinatesDto> positionDto) {
-        return trackingService.savePosition(positionDto);
+    public Mono<Void> savePosition(@RequestBody Flux<UserCoordinatesDto> userCoordinatesDtoFlux) {
+        return trackingService.savePosition(userCoordinatesDtoFlux);
     }
 
-    @RequestMapping(path = "/position", method = RequestMethod.GET)
-    public Flux<UserCoordinatesDto> listFamilyMembersLastCoordinates() {
-        return trackingService.listFamilyMembersLastCoordinates();
+    /**
+     * @param username username
+     * @return flux of UserCoordinatesDto
+     * @should return 200 status
+     * @should return valid error status if an exception has been thrown
+     */
+    @RequestMapping(path = "/position/{username}/family", method = RequestMethod.GET)
+    public Flux<UserCoordinatesDto> listFamilyMembersLastCoordinates(@PathVariable String username) {
+        return trackingService.listFamilyMembersLastCoordinates(Mono.just(username));
     }
 
 }

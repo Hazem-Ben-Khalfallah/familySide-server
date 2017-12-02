@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 
-@Document
+@Document(collection = "userCoordinates")
 class UserCoordinatesEntity {
 
     @Id
@@ -17,6 +17,7 @@ class UserCoordinatesEntity {
     @GeoSpatialIndexed
     private double[] coordinates;
 
+    @SuppressWarnings("unused")
     public UserCoordinatesEntity() {
     }
 
@@ -88,7 +89,7 @@ class UserCoordinatesEntity {
             return this;
         }
 
-        public Builder coordinates(double[] val) {
+        public Builder coordinates(double... val) {
             coordinates = val;
             return this;
         }

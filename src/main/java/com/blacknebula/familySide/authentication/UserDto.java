@@ -6,6 +6,7 @@ public class UserDto {
     private String password;
     private String email;
 
+    @SuppressWarnings("unused")
     public UserDto() {
     }
 

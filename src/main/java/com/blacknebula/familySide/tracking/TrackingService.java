@@ -17,12 +17,12 @@ import java.util.Date;
 class TrackingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrackingService.class);
 
-    private final TrackingRepository positionRepository;
+    private final TrackingRepository trackingRepository;
     private final UserService userService;
 
     @Autowired
-    public TrackingService(TrackingRepository positionRepository, UserService userService) {
-        this.positionRepository = positionRepository;
+    public TrackingService(TrackingRepository trackingRepository, UserService userService) {
+        this.trackingRepository = trackingRepository;
         this.userService = userService;
     }
 
@@ -65,16 +65,26 @@ class TrackingService {
                     return UserCoordinatesEntity.newBuilder()
                             .username(zip.getT1().getUsername())
                             .date(zip.getT1().getDate())
-                            .coordinates(new double[]{zip.getT1().getLat(), zip.getT1().getLang()})
+                            .coordinates(zip.getT1().getLat(), zip.getT1().getLang())
                             .build();
                 })
                 //todo use bulk insert
-                .flatMap(positionRepository::save)
+                .flatMap(trackingRepository::save)
                 .then();
     }
 
-    Flux<UserCoordinatesDto> listFamilyMembersLastCoordinates() {
-        return positionRepository.findAll()
+    /**
+     * @param usernameMono username
+     * @return flux of UserCoordinatesDto. It represents all related family members last coordinates.
+     * @should throw an exception if username does not exist
+     * @should return all related family members coordinates
+     * @should return related family members latest coordinates
+     * @should return empty flux if the caller has no signed family members
+     * @should return empty flux if there is no coordinates for family members
+     */
+    Flux<UserCoordinatesDto> listFamilyMembersLastCoordinates(Mono<String> usernameMono) {
+        return userService.listFamilyMembers(usernameMono)
+                .flatMap(trackingRepository::findMostRecentByUsername)
                 .map(userCoordinatesEntity -> UserCoordinatesDto.newBuilder()
                         .username(userCoordinatesEntity.getUsername())
                         .date(userCoordinatesEntity.getDate())
