@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +16,7 @@ class UserEntity {
     private String email;
     private String password;
     private Date creationDate;
+    @Deprecated
     private Set<String> familyMembers;
 
     @SuppressWarnings("unused")
@@ -75,10 +76,12 @@ class UserEntity {
         this.creationDate = creationDate;
     }
 
+    @Deprecated
     public Set<String> getFamilyMembers() {
         return familyMembers;
     }
 
+    @Deprecated
     public void setFamilyMembers(Set<String> familyMembers) {
         this.familyMembers = familyMembers;
     }
@@ -90,6 +93,7 @@ class UserEntity {
         private String email;
         private String password;
         private Date creationDate;
+        @Deprecated
         private Set<String> familyMembers;
 
         private Builder() {
@@ -120,6 +124,7 @@ class UserEntity {
             return this;
         }
 
+        @Deprecated
         public Builder familyMembers(Set<String> val) {
             familyMembers = val;
             return this;

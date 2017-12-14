@@ -1,9 +1,10 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import com.blacknebula.familySide.ApplicationTest;
 import com.blacknebula.familySide.common.CustomException;
 import com.google.common.collect.ImmutableSet;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,13 @@ public class UserServiceTest extends ApplicationTest {
 
     /**
      * @verifies throw an exception if username is empty or null
-     * @see UserService#signIn(reactor.core.publisher.Mono)
+     * @see UserService#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void signIn_shouldThrowAnExceptionIfUsernameIsEmptyOrNull() throws Exception {
+    public void signUp_shouldThrowAnExceptionIfUsernameIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.newBuilder()
+                userService.signUp(Mono.just(UserDto.newBuilder()
                         .email("Leo@mail.com")//
                         .password("password")//
                         .build())))
@@ -44,13 +45,13 @@ public class UserServiceTest extends ApplicationTest {
 
     /**
      * @verifies throw an exception if email is empty or null
-     * @see UserService#signIn(reactor.core.publisher.Mono)
+     * @see UserService#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void signIn_shouldThrowAnExceptionIfEmailIsEmptyOrNull() throws Exception {
+    public void signUp_shouldThrowAnExceptionIfEmailIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.newBuilder()
+                userService.signUp(Mono.just(UserDto.newBuilder()
                         .username("Leo")//
                         .password("password")//
                         .build())))
@@ -65,13 +66,13 @@ public class UserServiceTest extends ApplicationTest {
 
     /**
      * @verifies throw an exception if password is empty or null
-     * @see UserService#signIn(reactor.core.publisher.Mono)
+     * @see UserService#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void signIn_shouldThrowAnExceptionIfPasswordIsEmptyOrNull() throws Exception {
+    public void signUp_shouldThrowAnExceptionIfPasswordIsEmptyOrNull() throws Exception {
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.newBuilder()
+                userService.signUp(Mono.just(UserDto.newBuilder()
                         .username("Leo")//
                         .email("Leo@mail.com")//
                         .build())))
@@ -86,10 +87,10 @@ public class UserServiceTest extends ApplicationTest {
 
     /**
      * @verifies throw an exception if username already exists
-     * @see UserService#signIn(reactor.core.publisher.Mono)
+     * @see UserService#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void signIn_shouldThrowAnExceptionIfUsernameAlreadyExists() throws Exception {
+    public void signUp_shouldThrowAnExceptionIfUsernameAlreadyExists() throws Exception {
         // given
         final String username = "Leo";
 
@@ -101,7 +102,7 @@ public class UserServiceTest extends ApplicationTest {
                         .password("password")//
                         .build())
                         // when
-                        .then(userService.signIn(Mono.just(UserDto.newBuilder()
+                        .then(userService.signUp(Mono.just(UserDto.newBuilder()
                                 .username(username)//
                                 .password("password")
                                 .email("Leo@mail.com")//
@@ -117,15 +118,15 @@ public class UserServiceTest extends ApplicationTest {
 
     /**
      * @verifies create new user in database
-     * @see UserService#signIn(reactor.core.publisher.Mono)
+     * @see UserService#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void signIn_shouldCreateNewUserInDatabase() throws Exception {
+    public void signUp_shouldCreateNewUserInDatabase() throws Exception {
         final String username = "Leo";
 
         StepVerifier.create(
                 // when
-                userService.signIn(Mono.just(UserDto.newBuilder()
+                userService.signUp(Mono.just(UserDto.newBuilder()
                         .username(username)//
                         .password("password")//
                         .email("Leo@mail.com")//
@@ -260,5 +261,35 @@ public class UserServiceTest extends ApplicationTest {
                         .expectNext(familyMembersIds)
                         .expectComplete()
                         .verify());
+    }
+
+    /**
+     * @verifies throw an exception if username is empty or null
+     * @see UserService#findByUsername(String)
+     */
+    @Test
+    public void findByUsername_shouldThrowAnExceptionIfUsernameIsEmptyOrNull() throws Exception {
+        //TODO auto-generated
+        Assert.fail("Not yet implemented");
+    }
+
+    /**
+     * @verifies throw an exception if username does not exist in database
+     * @see UserService#findByUsername(String)
+     */
+    @Test
+    public void findByUsername_shouldThrowAnExceptionIfUsernameDoesNotExistInDatabase() throws Exception {
+        //TODO auto-generated
+        Assert.fail("Not yet implemented");
+    }
+
+    /**
+     * @verifies return User by username
+     * @see UserService#findByUsername(String)
+     */
+    @Test
+    public void findByUsername_shouldReturnUserByUsername() throws Exception {
+        //TODO auto-generated
+        Assert.fail("Not yet implemented");
     }
 }

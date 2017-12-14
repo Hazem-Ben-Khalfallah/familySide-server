@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import reactor.core.publisher.Mono;
 

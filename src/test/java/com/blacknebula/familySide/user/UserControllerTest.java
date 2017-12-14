@@ -1,8 +1,7 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import com.blacknebula.familySide.ApplicationTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,10 +32,10 @@ public class UserControllerTest extends ApplicationTest {
 
     /**
      * @verifies return 200 status
-     * @see UserController#connect(reactor.core.publisher.Mono)
+     * @see UserController#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void connect_shouldReturn200Status() throws Exception {
+    public void signUp_shouldReturn200Status() throws Exception {
         final String username = "Leo";
         // when
         this.client.post()
@@ -58,10 +57,10 @@ public class UserControllerTest extends ApplicationTest {
 
     /**
      * @verifies return valid error status if an exception has been thrown
-     * @see UserController#connect(reactor.core.publisher.Mono)
+     * @see UserController#signUp(reactor.core.publisher.Mono)
      */
     @Test
-    public void connect_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
+    public void signUp_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
         this.client.post()
                 .uri("/user")
                 .accept(MediaType.APPLICATION_JSON)

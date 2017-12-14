@@ -1,7 +1,8 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 public class UserDto {
 
+    private String id;
     private String username;
     private String password;
     private String email;
@@ -11,6 +12,7 @@ public class UserDto {
     }
 
     private UserDto(Builder builder) {
+        setId(builder.id);
         setUsername(builder.username);
         setPassword(builder.password);
         setEmail(builder.email);
@@ -18,6 +20,14 @@ public class UserDto {
 
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -46,6 +56,7 @@ public class UserDto {
 
 
     public static final class Builder {
+        private String id;
         private String username;
         private String password;
         private String email;
@@ -53,6 +64,10 @@ public class UserDto {
         private Builder() {
         }
 
+        public Builder id(String val) {
+            id = val;
+            return this;
+        }
         public Builder username(String val) {
             username = val;
             return this;

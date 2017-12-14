@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public class UserController {
      * @should return valid error status if an exception has been thrown
      */
     @RequestMapping(path = "/user", method = RequestMethod.POST)
-    public Mono<Void> connect(@RequestBody Mono<UserDto> userDtoMono) {
-        return userService.signIn(userDtoMono);
+    public Mono<Void> signUp(@RequestBody Mono<UserDto> userDtoMono) {
+        return userService.signUp(userDtoMono);
     }
 
 }

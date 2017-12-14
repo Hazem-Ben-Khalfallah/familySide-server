@@ -1,7 +1,7 @@
 package com.blacknebula.familySide.tracking;
 
 import com.blacknebula.familySide.ApplicationTest;
-import com.blacknebula.familySide.authentication.UserService;
+import com.blacknebula.familySide.user.UserService;
 import com.blacknebula.familySide.common.CustomException;
 import com.blacknebula.familySide.common.DateUtils;
 import com.google.common.collect.ImmutableList;

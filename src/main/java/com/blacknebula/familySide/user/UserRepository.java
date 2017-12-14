@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;

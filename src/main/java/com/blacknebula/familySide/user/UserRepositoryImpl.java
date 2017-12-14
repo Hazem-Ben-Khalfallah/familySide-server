@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;

@@ -1,4 +1,4 @@
-package com.blacknebula.familySide.authentication;
+package com.blacknebula.familySide.user;
 
 import com.blacknebula.familySide.common.CustomException;
 import com.blacknebula.familySide.common.StringUtils;
@@ -37,6 +37,38 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
+
+    /**
+     * @param username username
+     * @return Mono of UserDto
+     * @should throw an exception if username is empty or null
+     * @should throw an exception if username does not exist in database
+     * @should return User by username
+     */
+    public Mono<UserDto> findByUsername(String username) {
+        return Mono.just(username)
+                .map(u -> {
+                    if (StringUtils.isEmpty(u)) {
+                        throw new CustomException(HttpStatus.BAD_REQUEST, "username should not be empty nor null");
+                    }
+                    return u;
+                })
+                .flatMap(userRepository::existsByUsername)
+                .flatMap(userExists -> {
+                    if (!userExists) {
+                        throw new CustomException(HttpStatus.NOT_FOUND, "User does not exist with username %s", username);
+                    }
+                    return userRepository.findByUsername(username);
+                })
+                .map(userEntity -> UserDto.newBuilder()
+                        .id(userEntity.getId())
+                        .email(userEntity.getEmail())
+                        .password(userEntity.getPassword())
+                        .username(userEntity.getUsername())
+                        .build());
+
+    }
+
     /**
      * @param userDto user to be signed in
      * @return Mono void
@@ -46,7 +78,7 @@ public class UserService {
      * @should throw an exception if username already exists
      * @should create new user in database
      */
-    public Mono<Void> signIn(Mono<UserDto> userDto) {
+    public Mono<Void> signUp(Mono<UserDto> userDto) {
         return userDto
                 .map(u -> {
                     if (StringUtils.isEmpty(u.getUsername())) {
@@ -78,6 +110,8 @@ public class UserService {
     }
 
     /**
+     * todo use userConnection instead
+     *
      * @param usernameMono Mono of username
      * @return Flux of family members username
      * @should throw an exception if username is null
@@ -100,8 +134,8 @@ public class UserService {
                     }
                     return zip.getT1();
                 })
-                .flatMap(userRepository::findByUsername)
-                .flatMapMany(userEntity -> Flux.fromIterable(ObjectUtils.defaultIfNull(userEntity.getFamilyMembers(), Collections.emptySet())));
+                .flatMapMany(userRepository::findByUsername)
+                .flatMap(userEntity -> Flux.fromIterable(ObjectUtils.defaultIfNull(userEntity.getFamilyMembers(), Collections.emptySet())));
     }
 
 }
