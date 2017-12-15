@@ -1,20 +1,58 @@
 package com.blacknebula.familySide.connection;
 
-import org.junit.Assert;
+import com.blacknebula.familySide.ApplicationTest;
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import reactor.test.StepVerifier;
 
 /**
  * @author hazem
  */
-public class CustomUserConnectionRepositoryTest {
+public class CustomUserConnectionRepositoryTest extends ApplicationTest {
+
+    @Autowired
+    private UserConnectionRepository userConnectionRepository;
+
+
     /**
      * @verifies return true if there is a connection between 2 users
      * @see CustomUserConnectionRepository#checkConnectionExistence(String, String)
      */
     @Test
     public void checkConnectionExistence_shouldReturnTrueIfThereIsAConnectionBetween2Users() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // given
+                userConnectionRepository.save(UserConnectionEntity.newBuilder()
+                        .userId1("1")
+                        .userId2("2")
+                        .build())
+                        // when
+                        .then(userConnectionRepository.checkConnectionExistence("1", "2")))
+                // then
+                .expectNext(true)
+                .expectComplete()
+                .verify();
+    }
+
+    /**
+     * @verifies return true if there is a connection between 2 users but with reversed params
+     * @see CustomUserConnectionRepository#checkConnectionExistence(String, String)
+     */
+    @Test
+    public void checkConnectionExistence_shouldReturnTrueIfThereIsAConnectionBetween2UsersButWithReversedParams() throws Exception {
+        StepVerifier.create(
+                // given
+                userConnectionRepository.save(UserConnectionEntity.newBuilder()
+                        .userId1("1")
+                        .userId2("2")
+                        .build())
+                        // when
+                        .then(userConnectionRepository.checkConnectionExistence("2", "1")))
+                // then
+                .expectNext(true)
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -23,8 +61,13 @@ public class CustomUserConnectionRepositoryTest {
      */
     @Test
     public void checkConnectionExistence_shouldReturnFalseIfThereIsNoConnectionBetween2Users() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // when
+                userConnectionRepository.checkConnectionExistence("1", "2"))
+                // then
+                .expectNext(false)
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -33,8 +76,31 @@ public class CustomUserConnectionRepositoryTest {
      */
     @Test
     public void findByUsernameAndConnectionStatus_shouldReturnAllConnectionsIfStatusIsNull() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // given
+                userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("2")
+                                .status(UserConnectionStatusEnum.ACCEPTED)
+                                .build())
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("3")
+                                .status(UserConnectionStatusEnum.REFUSED)
+                                .build())
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("4")
+                                .userId2("1")
+                                .status(UserConnectionStatusEnum.PENDING)
+                                .build())
+                        .build())
+                        // when
+                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", null)))
+                // then
+                .expectNextCount(3)
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -43,8 +109,31 @@ public class CustomUserConnectionRepositoryTest {
      */
     @Test
     public void findByUsernameAndConnectionStatus_shouldFilterConnectionsIfStatusIsNotNull() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // given
+                userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("2")
+                                .status(UserConnectionStatusEnum.ACCEPTED)
+                                .build())
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("3")
+                                .status(UserConnectionStatusEnum.REFUSED)
+                                .build())
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("4")
+                                .userId2("1")
+                                .status(UserConnectionStatusEnum.PENDING)
+                                .build())
+                        .build())
+                        // when
+                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
+                // then
+                .expectNextCount(1)
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -53,8 +142,12 @@ public class CustomUserConnectionRepositoryTest {
      */
     @Test
     public void findByUsernameAndConnectionStatus_shouldReturnEmptyFluxIfStatusIsNullAndTheUserHasNoConnections() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // when
+                userConnectionRepository.findByUsernameAndConnectionStatus("1", null))
+                // then
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -63,7 +156,24 @@ public class CustomUserConnectionRepositoryTest {
      */
     @Test
     public void findByUsernameAndConnectionStatus_shouldReturnEmptyFluxIfTheUserHasNoConnectionsWithTheSpecifiedStatus() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // given
+                userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("2")
+                                .status(UserConnectionStatusEnum.ACCEPTED)
+                                .build())
+                        .add(UserConnectionEntity.newBuilder()
+                                .userId1("1")
+                                .userId2("3")
+                                .status(UserConnectionStatusEnum.REFUSED)
+                                .build())
+                        .build())
+                        // when
+                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
+                // then
+                .expectComplete()
+                .verify();
     }
 }

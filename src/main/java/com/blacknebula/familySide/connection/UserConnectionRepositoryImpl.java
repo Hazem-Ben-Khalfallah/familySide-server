@@ -28,8 +28,12 @@ public class UserConnectionRepositoryImpl implements CustomUserConnectionReposit
 
     @Override
     public Flux<UserConnectionEntity> findByUsernameAndConnectionStatus(String userId, UserConnectionStatusEnum status) {
-        final Criteria criteria1Or2 = new Criteria().orOperator(where("userId1").is(userId), where("userId2").is(userId));
-        final Query query = new Query().addCriteria(criteria1Or2);
+        final Criteria criteria = new Criteria() //
+                .orOperator(where("userId1").is(userId), where("userId2").is(userId));
+        if (status != null) {
+            criteria.andOperator(where("status").is(status));
+        }
+        final Query query = new Query().addCriteria(criteria);
         return mongoTemplate.find(query, UserConnectionEntity.class);
     }
 }

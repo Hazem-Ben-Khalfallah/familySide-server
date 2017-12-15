@@ -146,21 +146,21 @@ public class UserServiceTest extends ApplicationTest {
      */
     @Test
     public void checkUsernameExistence_shouldReturnTrueIfUsernameAlreadyExistsInDatabase() throws Exception {
-        // given
         final String username = "Leo";
-        userRepository.save(UserEntity.newBuilder()
-                .username(username)//
-                .password("password")//
-                .email("Leo@mail.com")//
-                .build())
-                .doOnSuccess(aVoid -> StepVerifier.create(
+        // given
+        StepVerifier.create(
+                userRepository.save(UserEntity.newBuilder()
+                        .username(username)//
+                        .password("password")//
+                        .email("Leo@mail.com")//
+                        .build())
                         // when
-                        userService.checkUsernameExistence(username) //
-                )
-                        // then
-                        .expectNext(true)
-                        .expectComplete()
-                        .verify());
+                        .thenMany(userService.checkUsernameExistence(username))
+        )
+                // then
+                .expectNext(true)
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -223,18 +223,18 @@ public class UserServiceTest extends ApplicationTest {
     public void listFamilyMembers_shouldReturnEmptyFluxIfUserHasNoFamilyMembers() throws Exception {
         // given
         final String username = "Leo";
-        userRepository.save(UserEntity.newBuilder()
-                .username(username)//
-                .password("password")//
-                .email("Leo@mail.com")//
-                .build())
-                .doOnSuccess(aVoid -> StepVerifier.create(
+        StepVerifier.create(
+                userRepository.save(UserEntity.newBuilder()
+                        .username(username)//
+                        .password("password")//
+                        .email("Leo@mail.com")//
+                        .build())
                         // when
-                        userService.listFamilyMembers(Mono.just(username)) //
-                )
-                        // then
-                        .expectComplete()
-                        .verify());
+                        .thenMany(userService.listFamilyMembers(Mono.just(username)))
+        )
+                // then
+                .expectComplete()
+                .verify();
     }
 
     /**
@@ -245,22 +245,24 @@ public class UserServiceTest extends ApplicationTest {
     public void listFamilyMembers_shouldReturnFluxOfFamilyMembersIds() throws Exception {
         final String username = "Leo";
         final String[] familyMembersIds = {"Leo-father", "Leo-mother"};
-        userRepository.save(UserEntity.newBuilder()
-                .username(username)//
-                .password("password")//
-                .familyMembers(ImmutableSet.<String>builder()
-                        .add(familyMembersIds)
+
+        StepVerifier.create(
+                // given
+                userRepository.save(UserEntity.newBuilder()
+                        .username(username)//
+                        .password("password")//
+                        .email("Leo@mail.com")//
+                        .familyMembers(ImmutableSet.<String>builder()
+                                .add(familyMembersIds)
+                                .build())
                         .build())
-                .email("Leo@mail.com")//
-                .build())
-                .doOnSuccess(aVoid -> StepVerifier.create(
                         // when
-                        userService.listFamilyMembers(Mono.just(username)) //
-                )
-                        // then
-                        .expectNext(familyMembersIds)
-                        .expectComplete()
-                        .verify());
+                        .thenMany(userService.listFamilyMembers(Mono.just(username)))
+        )
+                // then
+                .expectNext(familyMembersIds)
+                .expectComplete()
+                .verify();
     }
 
     /**

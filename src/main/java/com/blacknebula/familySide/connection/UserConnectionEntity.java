@@ -16,6 +16,8 @@ class UserConnectionEntity {
     private String userId2;
     private UserConnectionStatusEnum status;
 
+    public UserConnectionEntity() {
+    }
 
     private UserConnectionEntity(Builder builder) {
         setId(builder.id);

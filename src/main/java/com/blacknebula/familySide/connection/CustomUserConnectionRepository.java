@@ -14,6 +14,7 @@ public interface CustomUserConnectionRepository {
      * @param userId2 second userId
      * @return Mono of Boolean
      * @should return true if there is a connection between 2 users
+     * @should return true if there is a connection between 2 users but with reversed params
      * @should return false if there is no connection between 2 users
      */
     Mono<Boolean> checkConnectionExistence(String userId1, String userId2);
