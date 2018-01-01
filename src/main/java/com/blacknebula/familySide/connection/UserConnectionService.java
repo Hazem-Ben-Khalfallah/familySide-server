@@ -57,7 +57,8 @@ class UserConnectionService {
                 ))
                 .map(zip -> {
                     if (zip.getT1()) {
-                        throw new CustomException(HttpStatus.TOO_MANY_REQUESTS, "There already a connection between the 2 users");
+                        throw new CustomException(HttpStatus.TOO_MANY_REQUESTS,
+                                "There is already a connection between %s and %s", zip.getT2().getUsername(), zip.getT3().getUsername());
                     }
                     final UserConnectionEntity userConnectionEntity = UserConnectionEntity.newBuilder()
                             .userId1(zip.getT2().getId())
@@ -82,8 +83,8 @@ class UserConnectionService {
      */
     Flux<UserConnectionDto> listConnections(String username, UserConnectionStatusEnum status) {
         return userService.findByUsername(username)
-                .flatMapMany(userDto -> Flux.zip(Flux.just(userDto.getId()), userConnectionRepository.findByUsernameAndConnectionStatus(userDto.getId(), status)))
-                .flatMap(zip -> Mono.zip(Mono.justOrEmpty(zip.getT2()), userService.findByUsername(zip.getT1())))
+                .flatMapMany(userDto -> userConnectionRepository.findByUserIdAndConnectionStatus(userDto.getId(), status))
+                .flatMap(userConnectionEntity -> Mono.zip(Mono.justOrEmpty(userConnectionEntity), userService.findById(userConnectionEntity.getUserId2())))
                 .map(zip -> UserConnectionDto.newBuilder()
                         .connectionId(zip.getT1().getId())
                         .username(zip.getT2().getUsername())
@@ -94,7 +95,7 @@ class UserConnectionService {
     /**
      * @param username     username
      * @param connectionId connection id
-     * @param status connection new status
+     * @param status       connection new status
      * @return empty Mono
      * @should throw an exception if username is empty
      * @should throw an exception if connectionId is empty
@@ -104,24 +105,21 @@ class UserConnectionService {
      * @should change connection request status to accepted
      */
     Mono<Void> updateConnectionStatus(String username, String connectionId, UserConnectionStatusEnum status) {
+        if (StringUtils.isEmpty(connectionId)) {
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "connectionId should not be empty nor null"));
+        }
         return Mono.just(connectionId)
-                .map(id -> {
-                    if (StringUtils.isEmpty(id)) {
-                        throw new CustomException(HttpStatus.BAD_REQUEST, "connectionId should not be empty");
-                    }
-                    return id;
-                })
                 .flatMap(userConnectionRepository::existsById)
                 .flatMap(connectionExists -> {
                     if (!connectionExists) {
-                        throw new CustomException(HttpStatus.BAD_REQUEST, "connection does not exist with id %s", connectionId);
+                        throw new CustomException(HttpStatus.NOT_FOUND, "connection does not exist with id %s", connectionId);
                     }
 
                     return userConnectionRepository.findById(connectionId);
                 })
                 .flatMap(userConnectionEntity -> Mono.zip(Mono.just(userConnectionEntity), userService.findByUsername(username)))
                 .map(zip -> {
-                    if (zip.getT1().getUserId2().equals(zip.getT2().getId())) {
+                    if (!zip.getT1().getUserId2().equals(zip.getT2().getId())) {
                         throw new CustomException(HttpStatus.UNAUTHORIZED, "connection is not targeting the user %s", username);
                     }
                     zip.getT1().setStatus(status);

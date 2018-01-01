@@ -72,10 +72,10 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
 
     /**
      * @verifies return all connections if status is null
-     * @see CustomUserConnectionRepository#findByUsernameAndConnectionStatus(String, UserConnectionStatusEnum)
+     * @see CustomUserConnectionRepository#findByUserIdAndConnectionStatus(String, UserConnectionStatusEnum)
      */
     @Test
-    public void findByUsernameAndConnectionStatus_shouldReturnAllConnectionsIfStatusIsNull() throws Exception {
+    public void findByUserIdAndConnectionStatus_shouldReturnAllConnectionsIfStatusIsNull() throws Exception {
         StepVerifier.create(
                 // given
                 userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
@@ -96,7 +96,7 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
                                 .build())
                         .build())
                         // when
-                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", null)))
+                        .thenMany(userConnectionRepository.findByUserIdAndConnectionStatus("1", null)))
                 // then
                 .expectNextCount(3)
                 .expectComplete()
@@ -105,10 +105,10 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
 
     /**
      * @verifies filter connections if status is not null
-     * @see CustomUserConnectionRepository#findByUsernameAndConnectionStatus(String, UserConnectionStatusEnum)
+     * @see CustomUserConnectionRepository#findByUserIdAndConnectionStatus(String, UserConnectionStatusEnum)
      */
     @Test
-    public void findByUsernameAndConnectionStatus_shouldFilterConnectionsIfStatusIsNotNull() throws Exception {
+    public void findByUserIdAndConnectionStatus_shouldFilterConnectionsIfStatusIsNotNull() throws Exception {
         StepVerifier.create(
                 // given
                 userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
@@ -129,7 +129,7 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
                                 .build())
                         .build())
                         // when
-                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
+                        .thenMany(userConnectionRepository.findByUserIdAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
                 // then
                 .expectNextCount(1)
                 .expectComplete()
@@ -138,13 +138,13 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
 
     /**
      * @verifies return empty flux if status is null and the user has no connections
-     * @see CustomUserConnectionRepository#findByUsernameAndConnectionStatus(String, UserConnectionStatusEnum)
+     * @see CustomUserConnectionRepository#findByUserIdAndConnectionStatus(String, UserConnectionStatusEnum)
      */
     @Test
-    public void findByUsernameAndConnectionStatus_shouldReturnEmptyFluxIfStatusIsNullAndTheUserHasNoConnections() throws Exception {
+    public void findByUserIdAndConnectionStatus_shouldReturnEmptyFluxIfStatusIsNullAndTheUserHasNoConnections() throws Exception {
         StepVerifier.create(
                 // when
-                userConnectionRepository.findByUsernameAndConnectionStatus("1", null))
+                userConnectionRepository.findByUserIdAndConnectionStatus("1", null))
                 // then
                 .expectComplete()
                 .verify();
@@ -152,10 +152,10 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
 
     /**
      * @verifies return empty flux if the user has no connections with the specified status
-     * @see CustomUserConnectionRepository#findByUsernameAndConnectionStatus(String, UserConnectionStatusEnum)
+     * @see CustomUserConnectionRepository#findByUserIdAndConnectionStatus(String, UserConnectionStatusEnum)
      */
     @Test
-    public void findByUsernameAndConnectionStatus_shouldReturnEmptyFluxIfTheUserHasNoConnectionsWithTheSpecifiedStatus() throws Exception {
+    public void findByUserIdAndConnectionStatus_shouldReturnEmptyFluxIfTheUserHasNoConnectionsWithTheSpecifiedStatus() throws Exception {
         StepVerifier.create(
                 // given
                 userConnectionRepository.saveAll(ImmutableList.<UserConnectionEntity>builder()
@@ -171,7 +171,7 @@ public class CustomUserConnectionRepositoryTest extends ApplicationTest {
                                 .build())
                         .build())
                         // when
-                        .thenMany(userConnectionRepository.findByUsernameAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
+                        .thenMany(userConnectionRepository.findByUserIdAndConnectionStatus("1", UserConnectionStatusEnum.PENDING)))
                 // then
                 .expectComplete()
                 .verify();

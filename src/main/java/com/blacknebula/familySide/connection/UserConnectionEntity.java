@@ -1,5 +1,7 @@
 package com.blacknebula.familySide.connection;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -77,13 +79,13 @@ class UserConnectionEntity {
             return this;
         }
 
-        public Builder userId1(String userId1) {
-            this.userId1 = userId1;
+        public Builder userId2(String userId2) {
+            this.userId2 = userId2;
             return this;
         }
 
-        public Builder userId2(String userId2) {
-            this.userId2 = userId2;
+        public Builder userId1(String userId1) {
+            this.userId1 = userId1;
             return this;
         }
 
@@ -95,5 +97,31 @@ class UserConnectionEntity {
         public UserConnectionEntity build() {
             return new UserConnectionEntity(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserConnectionEntity that = (UserConnectionEntity) o;
+
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(userId1, that.userId1)
+                .append(userId2, that.userId2)
+                .append(status, that.status)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(userId1)
+                .append(userId2)
+                .append(status)
+                .toHashCode();
     }
 }

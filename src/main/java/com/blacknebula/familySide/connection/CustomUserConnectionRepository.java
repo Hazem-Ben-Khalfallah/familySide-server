@@ -31,5 +31,5 @@ public interface CustomUserConnectionRepository {
      * @should return empty flux if status is null and the user has no connections
      * @should return empty flux if the user has no connections with the specified status
      */
-    Flux<UserConnectionEntity> findByUsernameAndConnectionStatus(String userId, UserConnectionStatusEnum status);
+    Flux<UserConnectionEntity> findByUserIdAndConnectionStatus(String userId, UserConnectionStatusEnum status);
 }

@@ -271,8 +271,16 @@ public class UserServiceTest extends ApplicationTest {
      */
     @Test
     public void findByUsername_shouldThrowAnExceptionIfUsernameIsEmptyOrNull() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // when
+                userService.findByUsername(null))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+                    Assertions.assertThat(throwable.getMessage()).isEqualToIgnoringCase("username should not be empty nor null");
+                })
+                .verify();
     }
 
     /**
@@ -281,8 +289,16 @@ public class UserServiceTest extends ApplicationTest {
      */
     @Test
     public void findByUsername_shouldThrowAnExceptionIfUsernameDoesNotExistInDatabase() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        StepVerifier.create(
+                // when
+                userService.findByUsername("invalid_username"))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.NOT_FOUND);
+                    Assertions.assertThat(throwable.getMessage()).startsWith("User does not exist with username");
+                })
+                .verify();
     }
 
     /**
@@ -291,7 +307,82 @@ public class UserServiceTest extends ApplicationTest {
      */
     @Test
     public void findByUsername_shouldReturnUserByUsername() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        final String username = "Leo";
+        // given
+        StepVerifier.create(
+                userRepository.save(UserEntity.newBuilder()
+                        .username(username)//
+                        .password("password")//
+                        .email("Leo@mail.com")//
+                        .build())
+                        // when
+                        .then(userService.findByUsername(username))
+                        .map(UserDto::getUsername)
+        )
+                // then
+                .expectNext(username)
+                .expectComplete()
+                .verify();
+    }
+
+    /**
+     * @verifies throw an exception if userId is empty or null
+     * @see UserService#findById(String)
+     */
+    @Test
+    public void findById_shouldThrowAnExceptionIfUserIdIsEmptyOrNull() throws Exception {
+        StepVerifier.create(
+                // when
+                userService.findById(null))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+                    Assertions.assertThat(throwable.getMessage()).isEqualToIgnoringCase("userId should not be empty nor null");
+                })
+                .verify();
+    }
+
+    /**
+     * @verifies throw an exception if userId does not exist in database
+     * @see UserService#findById(String)
+     */
+    @Test
+    public void findById_shouldThrowAnExceptionIfUserIdDoesNotExistInDatabase() throws Exception {
+        StepVerifier.create(
+                // when
+                userService.findById("invalid_userId"))
+                // then
+                .consumeErrorWith(throwable -> {
+                    Assertions.assertThat(throwable).isInstanceOf(CustomException.class);
+                    Assertions.assertThat(((CustomException) throwable).getCustomErrorCode()).isEqualByComparingTo(HttpStatus.NOT_FOUND);
+                    Assertions.assertThat(throwable.getMessage()).startsWith("User does not exist with userId");
+                })
+                .verify();
+    }
+
+    /**
+     * @verifies return User by ud
+     * @see UserService#findById(String)
+     */
+    @Test
+    public void findById_shouldReturnUserByUd() throws Exception {
+        final String userId = "user-id";
+        // given
+        StepVerifier.create(
+                userRepository.save(UserEntity.newBuilder()
+                        .id(userId)
+                        .username("Leo")//
+                        .password("password")//
+                        .email("Leo@mail.com")//
+                        .build())
+                        // when
+                        .then(userService.findById(userId))
+                        .map(UserDto::getId)
+        )
+                // then
+                .expectNext(userId)
+                .expectComplete()
+                .verify();
     }
 }

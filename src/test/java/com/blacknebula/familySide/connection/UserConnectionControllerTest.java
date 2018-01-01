@@ -1,12 +1,19 @@
 package com.blacknebula.familySide.connection;
 
 import com.blacknebula.familySide.ApplicationTest;
-import org.junit.Assert;
+import com.blacknebula.familySide.common.CustomException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * @author hazem
@@ -30,8 +37,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void requestConnection_shouldReturn200Status() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.requestConnection(anyString(), any()))
+                .thenReturn(Mono.empty());
+        // when
+        this.client.post()
+                .uri("/user/{username}/connection", "Leo")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful();
     }
 
     /**
@@ -40,8 +54,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void requestConnection_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.requestConnection(anyString(), any()))
+                .thenReturn(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
+        // when
+        this.client.post()
+                .uri("/user/{username}/connection", "Leo")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
     }
 
     /**
@@ -50,9 +71,12 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void listConnections_shouldReturn200Status() throws Exception {
+        // given
+        Mockito.when(userConnectionService.listConnections(anyString(), any(UserConnectionStatusEnum.class)))
+                .thenReturn(Flux.empty());
         // when
         this.client.get()
-                .uri("/user/Leo/connection?status={status}", UserConnectionStatusEnum.ACCEPTED)
+                .uri("/user/{username}/connection?status={status}", "Leo", UserConnectionStatusEnum.ACCEPTED)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().is2xxSuccessful();
@@ -64,8 +88,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void listConnections_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.listConnections(anyString(), any(UserConnectionStatusEnum.class)))
+                .thenReturn(Flux.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
+        // when
+        this.client.get()
+                .uri("/user/{username}/connection?status={status}", "Leo", UserConnectionStatusEnum.ACCEPTED)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
     }
 
     /**
@@ -74,8 +105,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void acceptConnection_shouldReturn200StatusAndUpdateConnectionStatusToAccepted() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.updateConnectionStatus(anyString(), anyString(), Mockito.eq(UserConnectionStatusEnum.ACCEPTED)))
+                .thenReturn(Mono.empty());
+        // when
+        this.client.put()
+                .uri("/user/{username}/connection/{connectionId}", "Leo", "connection-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful();
     }
 
     /**
@@ -84,8 +122,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void acceptConnection_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.updateConnectionStatus(anyString(), anyString(), Mockito.eq(UserConnectionStatusEnum.ACCEPTED)))
+                .thenReturn(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
+        // when
+        this.client.put()
+                .uri("/user/{username}/connection/{connectionId}", "Leo", "connection-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
     }
 
     /**
@@ -94,8 +139,15 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void refuseConnection_shouldReturn200StatusAndUpdateConnectionStatusToRefused() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.updateConnectionStatus(anyString(), anyString(), Mockito.eq(UserConnectionStatusEnum.REFUSED)))
+                .thenReturn(Mono.empty());
+        // when
+        this.client.delete()
+                .uri("/user/{username}/connection/{connectionId}", "Leo", "connection-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful();
     }
 
     /**
@@ -104,7 +156,14 @@ public class UserConnectionControllerTest extends ApplicationTest {
      */
     @Test
     public void refuseConnection_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
-        //TODO auto-generated
-        Assert.fail("Not yet implemented");
+        // given
+        Mockito.when(userConnectionService.updateConnectionStatus(anyString(), anyString(), Mockito.eq(UserConnectionStatusEnum.REFUSED)))
+                .thenReturn(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
+        // when
+        this.client.delete()
+                .uri("/user/{username}/connection/{connectionId}", "Leo", "connection-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
     }
 }

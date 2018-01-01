@@ -1,5 +1,8 @@
 package com.blacknebula.familySide.connection;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * @author hazem
  */
@@ -72,5 +75,29 @@ class UserConnectionDto {
         public UserConnectionDto build() {
             return new UserConnectionDto(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserConnectionDto that = (UserConnectionDto) o;
+
+        return new EqualsBuilder()
+                .append(connectionId, that.connectionId)
+                .append(username, that.username)
+                .append(status, that.status)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(connectionId)
+                .append(username)
+                .append(status)
+                .toHashCode();
     }
 }

@@ -46,19 +46,46 @@ public class UserService {
      * @should return User by username
      */
     public Mono<UserDto> findByUsername(String username) {
+        if (StringUtils.isEmpty(username)) {
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "username should not be empty nor null"));
+        }
+
         return Mono.just(username)
-                .map(u -> {
-                    if (StringUtils.isEmpty(u)) {
-                        throw new CustomException(HttpStatus.BAD_REQUEST, "username should not be empty nor null");
-                    }
-                    return u;
-                })
                 .flatMap(userRepository::existsByUsername)
                 .flatMap(userExists -> {
                     if (!userExists) {
                         throw new CustomException(HttpStatus.NOT_FOUND, "User does not exist with username %s", username);
                     }
                     return userRepository.findByUsername(username);
+                })
+                .map(userEntity -> UserDto.newBuilder()
+                        .id(userEntity.getId())
+                        .email(userEntity.getEmail())
+                        .password(userEntity.getPassword())
+                        .username(userEntity.getUsername())
+                        .build());
+
+    }
+
+    /**
+     * @param userId user id
+     * @return Mono of UserDto
+     * @should throw an exception if userId is empty or null
+     * @should throw an exception if userId does not exist in database
+     * @should return User by ud
+     */
+    public Mono<UserDto> findById(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "userId should not be empty nor null"));
+        }
+
+        return Mono.just(userId)
+                .flatMap(userRepository::existsById)
+                .flatMap(userExists -> {
+                    if (!userExists) {
+                        throw new CustomException(HttpStatus.NOT_FOUND, "User does not exist with userId %s", userId);
+                    }
+                    return userRepository.findById(userId);
                 })
                 .map(userEntity -> UserDto.newBuilder()
                         .id(userEntity.getId())

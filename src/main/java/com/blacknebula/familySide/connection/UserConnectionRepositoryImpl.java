@@ -27,7 +27,7 @@ public class UserConnectionRepositoryImpl implements CustomUserConnectionReposit
     }
 
     @Override
-    public Flux<UserConnectionEntity> findByUsernameAndConnectionStatus(String userId, UserConnectionStatusEnum status) {
+    public Flux<UserConnectionEntity> findByUserIdAndConnectionStatus(String userId, UserConnectionStatusEnum status) {
         final Criteria criteria = new Criteria() //
                 .orOperator(where("userId1").is(userId), where("userId2").is(userId));
         if (status != null) {

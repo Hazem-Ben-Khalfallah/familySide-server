@@ -82,8 +82,6 @@ public class TrackingServiceTest extends ApplicationTest {
                                 .lat(1d) //
                                 .lang(1d)
                                 .build()))
-                                .thenMany(trackingRepository.findAll()) //
-                                .map(UserCoordinatesEntity::getUsername) //
                 )
                 // then
                 .consumeErrorWith(throwable -> {

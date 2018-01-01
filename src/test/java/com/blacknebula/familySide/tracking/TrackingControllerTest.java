@@ -61,7 +61,7 @@ public class TrackingControllerTest extends ApplicationTest {
     @Test
     public void savePosition_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
         // given
-        Mockito.when(trackingService.savePosition(any())).thenReturn(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "username does not exist")));
+        Mockito.when(trackingService.savePosition(any())).thenReturn(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
         // when
         this.client.post()
                 .uri("/position")
@@ -100,7 +100,7 @@ public class TrackingControllerTest extends ApplicationTest {
     @Test
     public void listFamilyMembersLastCoordinates_shouldReturnValidErrorStatusIfAnExceptionHasBeenThrown() throws Exception {
         // given
-        Mockito.when(trackingService.listFamilyMembersLastCoordinates(any())).thenReturn(Flux.error(new CustomException(HttpStatus.BAD_REQUEST, "username does not exist")));
+        Mockito.when(trackingService.listFamilyMembersLastCoordinates(any())).thenReturn(Flux.error(new CustomException(HttpStatus.BAD_REQUEST, "Dummy exception")));
         // when
         this.client.get()
                 .uri("/position/Leo/family")
